@@ -24,9 +24,12 @@
     "@hapi/joi": "^17.1.1",
     "bcrypt": "^5.0.1",
     "config": "^3.3.6",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
+    "helmet": "^4.6.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.2",
+    "validate-phone-number-node-js": "0.0.1",
     "winston": "^3.3.3"
   }
 }
