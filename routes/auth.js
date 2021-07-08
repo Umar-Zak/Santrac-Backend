@@ -1,6 +1,6 @@
 const express = require("express")
 const validateBody=require("../middleware/validate-body")
-const {validateRF,User}=require("../models/user")
+const {validateRF,User,validateLF}=require("../models/user")
 const bcrypt=require("bcrypt")
 
 const Router = express.Router()
@@ -19,5 +19,18 @@ Router.post("/register", validateBody(validateRF), async(req, res) => {
 })
 
 
+
+Router.post("/login", validateBody(validateLF),async (req, res) => {
+    const { email, password } = req.body
+    const user = await User.findOne({ $or: [{ email }, { username: email }] })
+    if (!user) return res.status(400).send("Username or password incorrect")
+    
+    const isValid = await bcrypt.compare(password, user.password)
+    if (!isValid) return res.status(400).send("Username or password incorrect")
+    
+    user.lastSeen = new Date()
+    await user.save()
+    res.send(user.genAuthToken())
+})
 
 module.exports=Router

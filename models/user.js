@@ -20,6 +20,15 @@ userSchema.methods.genAuthToken = function () {
 
 const User = mongoose.model("User", userSchema)
 
+function validateLoginForm(body) {
+    const schema = Joi.object({
+        email: Joi.string().trim().required().label("Email or username"),
+        password:Joi.string().trim().required().label("Password")
+    })
+
+    return schema.validate(body)
+}
+
 function validateRegisterationForm(body) {
     const schema = Joi.object({
         username: Joi.string().min(3).trim().required().label("Username"),
@@ -28,8 +37,14 @@ function validateRegisterationForm(body) {
         phone:Joi.string().trim().pattern(/[0-9]{10,}/).required().label("Phone Number")
     })
 
+
+    
     return schema.validate(body)
 }
 
+
+
+
 module.exports.User = User;
-module.exports.validateRF=validateRegisterationForm
+module.exports.validateRF = validateRegisterationForm
+module.exports.validateLF=validateLoginForm
