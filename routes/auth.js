@@ -37,6 +37,8 @@ Router.post("/login", validateBody(validateLF),async (req, res) => {
     res.send(user.genAuthToken())
 })
 
+
+
 Router.get("/all", [auth,admin], async (req, res) => {
     let users = await User.find()
     users = users.map(({_doc}) => {
@@ -51,6 +53,11 @@ Router.delete("/:id",[auth,admin,objectId], async (req, res) => {
     
     res.send("User deleted")
     
+})
+
+Router.get("/logout", auth, async (req, res) => {
+    await User.updateOne({ email: req.user.email }, { $set: { lastSeen: new Date() } })
+    res.send("user logged out")
 })
 
 module.exports=Router
