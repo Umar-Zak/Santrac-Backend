@@ -3,7 +3,7 @@ const config = require("config")
 
 
 module.exports = (req,res,next) => {
-    const token = req.headers("x-auth-token")
+    const token = req.header("x-auth-token")
     if (!token) return res.status(401).send("Unauthorized to visit this endpoint")
     
     try {

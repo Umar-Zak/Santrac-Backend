@@ -1,7 +1,11 @@
 const express = require("express")
-const validateBody=require("../middleware/validate-body")
-const {validateRF,User,validateLF}=require("../models/user")
 const bcrypt=require("bcrypt")
+const validateBody=require("../middleware/validate-body")
+const { validateRF, User, validateLF } = require("../models/user")
+const auth = require("../middleware/auth")
+const admin = require("../middleware/admin")
+const objectId=require("../middleware/object-id")
+
 
 const Router = express.Router()
 
@@ -31,6 +35,22 @@ Router.post("/login", validateBody(validateLF),async (req, res) => {
     user.lastSeen = new Date()
     await user.save()
     res.send(user.genAuthToken())
+})
+
+Router.get("/all", [auth,admin], async (req, res) => {
+    let users = await User.find()
+    users = users.map(({_doc}) => {
+        return {..._doc,password:""}
+    })
+    res.send(users)
+})
+
+Router.delete("/:id",[auth,admin,objectId], async (req, res) => {
+    const {deletedCount} = await User.deleteOne({_id:req.params.id})
+    if (!deletedCount) return res.status(404).send("User unavailable")
+    
+    res.send("User deleted")
+    
 })
 
 module.exports=Router

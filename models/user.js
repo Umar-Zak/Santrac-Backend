@@ -10,12 +10,13 @@ const userSchema = mongoose.Schema({
     password: { type: String, required: true },
     phone: { type: String, required: true },
     dateJoined: { type: Date, default: new Date() },
-    lastSeen:{type:Date}
+    lastSeen:{type:Date},
+    isAdmin:{type:Boolean,default:false}
 })
 
 
 userSchema.methods.genAuthToken = function () {
-    return jwt.sign({username:this.username,email:this.email,phone:this.phone},config.get("privatekey"))
+    return jwt.sign({username:this.username,email:this.email,phone:this.phone,isAdmin:this.isAdmin},config.get("privatekey"))
 }
 
 const User = mongoose.model("User", userSchema)
