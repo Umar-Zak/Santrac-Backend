@@ -9,7 +9,7 @@ const Router = express.Router()
 
 
 Router.get("/all", async (req, res) => {
-    const products = await Product.find()
+    const products = await Product.find({}).populate("category")
     res.send(products)
 })
 
@@ -34,9 +34,12 @@ Router.get("/get/category/:id", objectId, async (req, res) => {
 })
 
 Router.post("/add", [auth,admin,validateBody(validatePF)], async (req, res) => {
-    const { name, price, quantity, image, description } = req.body
+    let { name, price, quantity, image, description,category } = req.body
     
-    const product = new Product({ name, price, description, image, quantity })
+    category = await Category.findById(category)
+    if(!category)return res.status(404).send("Category unavailable")
+
+    const product = new Product({ name, price, description, image, quantity,category:category._id })
     await product.save()
     res.send(product)
 })
@@ -58,9 +61,9 @@ Router.put("/category/:id", [auth, admin, objectId, validateBody(validateCF)], a
 })
 
 Router.put("/:id", [auth, admin, objectId, validateBody(validatePF)], async (req, res) => {
-    const { name, price, quantity, image, description } = req.body
+    const { name, price, quantity, image, description,category } = req.body
     
-    const results = await Product.updateOne({ _id: req.params.id }, { $set: { price, name, quantity, image, description,lastModified:new Date() } })
+    const results = await Product.updateOne({ _id: req.params.id }, { $set: { price, name, quantity,category,image, description,lastModified:new Date() } })
     
     if (results.nModified === 0)
         return res.status(404).send("Product unavailable")

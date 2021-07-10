@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 const Joi = require("@hapi/joi")
-
+Joi.objectID=require("joi-objectid")(Joi)
 
 const productSchema = mongoose.Schema({
     name: { type: String, required: true },
@@ -18,7 +18,8 @@ function validateProductform(body) {
         price: Joi.number().min(1).required().label("Product price"),
         description: Joi.string().required().label("Product description"),
         quantity: Joi.number().min(1).required().label("Product quantity"),
-        image:Joi.string().required().label("Product image")
+        image: Joi.string().required().label("Product image"),
+        category:Joi.objectID().required().label("Product category")
     })
     return schema.validate(body)
 }
