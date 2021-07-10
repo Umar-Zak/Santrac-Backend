@@ -16,7 +16,7 @@ const userSchema = mongoose.Schema({
 
 
 userSchema.methods.genAuthToken = function () {
-    return jwt.sign({username:this.username,email:this.email,phone:this.phone,isAdmin:this.isAdmin},config.get("privatekey"))
+    return jwt.sign({username:this.username,email:this.email,phone:this.phone,isAdmin:this.isAdmin,_id:this._id},config.get("privatekey"))
 }
 
 const User = mongoose.model("User", userSchema)
