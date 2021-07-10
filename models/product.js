@@ -8,7 +8,8 @@ const productSchema = mongoose.Schema({
     description: { type: String, required: true },
     image: { type: String, required: true },
     quantity: { type: Number, required: true },
-    lastModified:{type:Date,default:new Date()}
+    lastModified: { type: Date, default: new Date() },
+    category:{type:mongoose.Schema.Types.ObjectId,ref:"Category"}
 })
 
 function validateProductform(body) {
