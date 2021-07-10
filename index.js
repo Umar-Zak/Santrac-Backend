@@ -3,7 +3,8 @@ const mongoose = require("mongoose")
 const config = require("config")
 const cors = require("cors")
 const helmet=require("helmet")
-const auth=require("./routes/auth") 
+const auth = require("./routes/auth")
+const product=require("./routes/product")
 
 const app = express()
 
@@ -11,7 +12,8 @@ app.use(helmet())
 app.use(cors())
 app.use(express.json())
 app.use("/assets/",express.static("assets"))
-app.use("/users",auth)
+app.use("/users", auth)
+app.use("/products",product)
 
 mongoose.connect(config.get("db")).then(() => {
     console.log(`Connected to ${config.get("db")}`)
