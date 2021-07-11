@@ -21,6 +21,11 @@ mongoose.connect(config.get("db")).then(() => {
     console.log(`Error: ${err}`)
 })
 
+
+app.get("/", (req, res) => {
+    res.send("This is an API exclusively built for Santrac Groupe. Contact the admin to find out the endpoints if interested")
+})
+
 const PORT = process.env.PORT||5000
 
 app.listen(PORT, () => {
