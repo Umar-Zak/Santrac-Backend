@@ -12,6 +12,13 @@ const productSchema = mongoose.Schema({
     category:{type:mongoose.Schema.Types.ObjectId,ref:"Category"}
 })
 
+const cartSchema = mongoose.Schema({
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    items:{type:[],default:[]}
+})
+
+const Cart=mongoose.model("Cart",cartSchema)
+
 function validateProductform(body) {
     const schema = Joi.object({
         name: Joi.string().required().label("Product name"),
@@ -24,9 +31,19 @@ function validateProductform(body) {
     return schema.validate(body)
 }
 
+function validateCartContent(body) {
+    const schema = Joi.object({
+        user: Joi.objectID().required().label("User indentity"),
+        items:Joi.array().required().label("Cart items")
+    })
+    return schema.validate(body)
+}
+
 const Product = mongoose.model("Product", productSchema)
 
 
 
 module.exports.Product = Product
-module.exports.validatePF =validateProductform
+module.exports.validatePF = validateProductform
+module.exports.Cart = Cart
+module.exports.validateCC=validateCartContent

@@ -1,5 +1,5 @@
 const express = require("express")
-const {validatePF,Product}=require("../models/product")
+const {validatePF,Product,Cart,validateCC}=require("../models/product")
 const auth = require("../middleware/auth")
 const admin = require("../middleware/admin")
 const objectId = require("../middleware/object-id")
@@ -11,6 +11,12 @@ const Router = express.Router()
 Router.get("/all", async (req, res) => {
     const products = await Product.find({}).populate("category")
     res.send(products)
+})
+
+
+Router.get("/cart-items", auth, async (req, res) => {
+    const items = await Cart.find({ user: req.user._id })
+    res.send(items)
 })
 
 Router.get("/all/categories", async (req, res) => {
@@ -44,6 +50,18 @@ Router.post("/add", [auth,admin,validateBody(validatePF)], async (req, res) => {
     res.send(product)
 })
 
+
+Router.post("/add-to-cart", [auth,validateBody(validateCC)], async (req, res) => {
+    let items = await Cart.find({ user: req.body.user })
+    if (items.length === 0) {
+        items = new Cart({ user: req.body.user, items: req.body.items })
+        await items.save()
+       return  res.send("Items added to cart")
+    }
+
+    await Cart.updateOne({ user: req.body.user }, { $set: { items: req.body.items } })
+    res.send("Cart updated")
+})
 
 
 Router.post("/add/categories", [auth, admin, validateBody(validateCF)], async (req, res) => {
