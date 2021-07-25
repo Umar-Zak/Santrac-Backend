@@ -4,7 +4,8 @@ const Joi = require("@hapi/joi")
 
 
 const categorySchema = mongoose.Schema({
-    name:{type:String,required:true}
+    name: { type: String, required: true },
+    created_at:{type:Date, default:new Date()}
 })
 
 function validateCategoryForm(body) {

@@ -9,7 +9,7 @@ const {Product } = require("../models/product")
 
 
 const Router = express.Router()
-Router.get("/", auth, async (req, res) => {
+Router.get("/", [auth,admin], async (req, res) => {
     const orders = await Order.find({ user: req.user._id }).populate("user")
     res.send(orders)
 })

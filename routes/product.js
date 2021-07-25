@@ -72,8 +72,11 @@ Router.post("/add/categories", [auth, admin, validateBody(validateCF)], async (r
 
 
 Router.put("/category/:id", [auth, admin, objectId, validateBody(validateCF)], async (req, res) => {
-    const {nModified} = await Category.updateOne({ _id: req.params.id }, { $set: { name: req.body.name } })
-    if (nModified === 0) return res.status(404).send("Category unavailable")
+    const category = await Category.findById(req.params.id)
+    if (!category) return res.status(404).send("Category unavailable")
+    
+    const { nModified } = await Category.updateOne({ _id: req.params.id }, { $set: { name: req.body.name } })
+    if (nModified === 0) return res.status(402).send("No changes made")
     
     res.send("Category modified")
 })
